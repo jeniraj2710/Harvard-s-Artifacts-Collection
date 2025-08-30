@@ -3,9 +3,8 @@ import requests
 import mysql.connector
 import pandas as pd
 
-# =========================
+
 #  DB CONNECTION
-# =========================
 def get_connection():
     return mysql.connector.connect(
         host="gateway01.us-east-1.prod.aws.tidbcloud.com",
@@ -15,9 +14,8 @@ def get_connection():
         database="Harvard_Artifacts"
     )
 
-# =========================
+
 #  CREATE TABLES
-# =========================
 def create_tables(cursor):
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS artifact_metadata (
@@ -61,9 +59,8 @@ def create_tables(cursor):
         )
     """)
 
-# =========================
 #  FETCH DATA FROM API
-# =========================
+
 API_KEY = "98caeae1-8b72-42df-9664-a28ae2f90919re"  
 BASE_URL = "https://api.harvardartmuseums.org/object"
 
@@ -80,9 +77,8 @@ def fetch_artifacts(classification, size=50, records=100):
 
     return all_data[:records]
 
-# =========================
 #  INSERT INTO SQL
-# =========================
+
 def insert_data(cursor, artifacts):
     for art in artifacts:
         # Metadata
@@ -136,9 +132,8 @@ def insert_data(cursor, artifacts):
                 c.get("css3")
             ))
 
-# =========================
 #  PREDEFINED QUERIES
-# =========================
+
 queries = {
     "Artifacts from 11th century Byzantine": 
         "SELECT * FROM artifact_metadata WHERE century='11th century' AND culture='Byzantine';",
@@ -152,9 +147,7 @@ queries = {
         "SELECT department, COUNT(*) FROM artifact_metadata GROUP BY department;"
 }
 
-# =========================
 #  STREAMLIT UI
-# =========================
 st.title("🏛️ Harvard Artifacts Explorer")
 
 # --- Sidebar Controls ---
@@ -204,3 +197,4 @@ if st.button("Run Query"):
         st.dataframe(pd.DataFrame(rows))
     else:
         st.info("No results found")
+
